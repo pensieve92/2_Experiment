@@ -3,6 +3,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
 	<!-- SqlSession setup for MyBatis Database Layer -->
+	<!-- MyBatis설정 -->
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:/egovframework/sqlmap/example/sql-mapper-config.xml" />
@@ -10,6 +11,7 @@
 	</bean>
 
 	<!-- MapperConfigurer setup for MyBatis Database Layer with @Mapper("deptMapper") in DeptMapper Interface -->
+	<!-- Mapper설정 -->
  	<bean class="egovframework.rte.psl.dataaccess.mapper.MapperConfigurer">
 		<property name="basePackage" value="egovframework.example.sample.service.impl" />
 	</bean>
