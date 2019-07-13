@@ -13,7 +13,8 @@
 	<!-- MapperConfigurer setup for MyBatis Database Layer with @Mapper("deptMapper") in DeptMapper Interface -->
 	<!-- Mapper설정 -->
  	<bean class="egovframework.rte.psl.dataaccess.mapper.MapperConfigurer">
-		<property name="basePackage" value="egovframework.example.sample.service.impl" />
+<!-- 		<property name="basePackage" value="egovframework.example.sample.service.impl" /> -->
+		<property name="basePackage" value="pensieve.login.service.impl"/> 
 	</bean>
     
 </beans>
