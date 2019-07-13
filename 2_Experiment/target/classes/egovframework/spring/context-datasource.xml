@@ -3,61 +3,41 @@
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
         http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
-	
-	<!-- 테스트 실행용 --> 
-	<!-- <jdbc:embedded-database id="dataSource" type="HSQL">
-		<jdbc:script location= "classpath:/db/sampledb.sql"/>
-	</jdbc:embedded-database> -->
-     
-     
-    <!-- hsql (테스트용 메모리 DB)
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"/>
-        <property name="url" value="jdbc:log4jdbc:hsqldb:hsql://localhost/sampledb"/>
-        <property name="username" value="sa"/>
+ 
+    <!-- datasource 설정(propertyConfigurer 활용) -->
+	<!-- <alias name="dataSource" alias="dataSource" /> -->
+    <!-- <alias name="dataSource-${Globals.DbType}" alias="egov.dataSource" /> --> 
+
+    <!-- globals.properties 암호화 설정-->
+    <bean id="environmentVariablesConfiguration" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+        <property name="algorithm" value="PBEWITHMD5ANDDES" />
+        <!-- <property name="passwordEnvName" value="APP_ENCRYPTION_PASSWORD" /> 	 환경변수에 key값저장 -->
+        <!-- <property name="password" value="test"/> -->
     </bean>
-    -->  
-    
-    <!-- Mysql (POM에서 commons-dbcp, mysql-connector-java 관련 라이브러리 설정 ) 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://127.0.0.1:3306/example" />
-        <property name="username" value="user"/>
-        <property name="password" value="password"/>
+  
+    <bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <property name="config" ref="environmentVariablesConfiguration" />
+        <property name="password" value="test" />
     </bean>
-    -->
     
-    
-    
-    <!-- globals.properties 파일에 등록된 DB정보를 사용하여 datasource 정보를 정의한다. -->
-    <bean id="propertyConfigurer"
-        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<!-- globals.properties 파일에 등록된 DB정보를 사용하여 datasource 정보를 정의한다. -->
+    <bean id="propertyConfig" class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+        <constructor-arg ref="configurationEncryptor" />
         <property name="locations">
             <list>
                 <value>classpath:/egovframework/globals.properties</value>
             </list>
         </property>
     </bean>
- 
-    <!-- datasource 설정(propertyConfigurer 활용) -->
-<!--     <alias name="dataSource-${Globals.DbType}" alias="dataSource" />
-    <alias name="dataSource-${Globals.DbType}" alias="egov.dataSource" /> -->
- 
+    
     <!-- oralce -->
+    <!-- oracle (POM에서 commons-dbcp, ojdbc(라이센스 사항으로 별도로 배포되지 않음) 관련 라이브러리 설정) -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${Globals.DriverClassName}"/>
         <property name="url" value="${Globals.Url}" />
         <property name="username" value="${Globals.UserName}"/>
         <property name="password" value="${Globals.Password}"/>
     </bean>
-    
-    <!-- oracle (POM에서 commons-dbcp, ojdbc(라이센스 사항으로 별도로 배포되지 않음) 관련 라이브러리 설정) -->
-<!--     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
-        <property name="url" value="jdbc:oracle:thin:@123.213.29.5:1521:orcl" />
-        <property name="username" value="JBH"/>
-        <property name="password" value="1234"/>
-    </bean> -->
-    
+     
     
 </beans>
